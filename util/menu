@@ -1,0 +1,217 @@
+#! /bin/bash
+
+# Taking command line argument (1st)
+ARG1=("$1")
+ARG2=("$2")
+
+# Variables
+WIFI_INTERFACE=wlp2s0
+
+
+# Current linux distribution
+DISTRO="arch"
+
+# function definations
+
+# update function
+update(){
+  # getting distro name
+  DISTRO=("$1")
+  echo  "Updating your $DISTRO linux system ..."
+
+  case $DISTRO in
+    arch | manjaro | arco ) 
+      sudo pacman -Syu
+      ;;
+
+    ubuntu | mint | debian | mx | elementry | "pop os" )
+      sudo apt update && sudo apt upgrade
+      ;;
+
+    "kde neon")
+      sudo apt update && sudo pkcon update
+      ;;
+
+    solus)
+      sudo eopkg upgrade
+      ;;
+
+    *)
+      echo "$DISTRO Linux Distro is not added in this script!"
+      echo "Make sure that distro name is all smallcaps."
+      ;;
+
+  esac
+}	
+
+
+# WIFI Hotspot
+wifi_hotspot(){
+  echo creating acess point ...
+  echo "Interface: $WIFI_INTERFACE"
+  #Install create_ap package before executing this function
+  # Deoendencies: bash util-linux  procps hostapd iproute2 iw dnsmasq iptables
+  sudo create_ap $WIFI_INTERFACE $WIFI_INTERFACE axiom39 34567893
+}
+
+# WIFI Strength
+wifi_strength(){
+  # Install required dependencies
+  INTERVAL=("$1")
+  watch -n$INTERVAL iwconfig
+}
+
+# Disable/Enable Internal keyboard
+internal_keyboard(){
+  case $1 in
+  # Enable Internal keyboard
+  on | 1 )
+    xinput reattach 15 3
+    echo Internal keyboard Enabled ...
+    ;;
+
+  #  Disable Internal keyboard
+  off | 0 )
+    xinput float 15
+    echo Internal keyboard Disabled ...
+    ;;
+
+  *)
+    xinput reattach 15 3
+    echo Internal keyboard Enabled ...
+    ;;
+
+  esac
+}
+
+# Start/Stop SAMBA Services
+smb_service(){
+  case $1 in
+  # start smb services
+  start | 1 )
+   sudo systemctl start smb.service
+   sudo systemctl start nmb.service
+ echo smb service started ...
+    ;;
+
+  # stop smb services
+  stop | 0 )
+    sudo systemctl stop smb.service
+    sudo systemctl stop nmb.service
+    echo smb service stopped ...
+    ;;
+
+  *)
+    sudo systemctl stop smb.service
+    sudo systemctl stop nmb.service
+    echo smb service stopped ...
+    ;;
+
+  esac
+}
+
+# Start/Stop MongoDB Services
+mongodb_service(){
+  case $1 in
+  # start Mongodb services
+  start | 1 )
+   sudo systemctl start mongodb    
+   echo MongoDB service started ...
+    ;;
+
+  # stop MongoDB services
+  stop | 0 )
+    sudo systemctl stop mongodb
+    echo MongoDB service stopped ...
+    ;;
+
+  *)
+    sudo systemctl stop mongodb
+    echo MongoDB service stopped ...
+    ;;
+
+  esac
+}
+
+# Start the game..
+start_game(){
+  case $1 in
+  # start NFS Most Wanted (Using WINE)
+  nfsmw )
+    echo Starting NFS Most Wanted ...
+    wine /home/shivam/games/NFSMW/Speed.exe
+    ;;
+
+  *)
+    echo Invalid game name ...
+    ;;
+
+  esac
+}
+
+
+
+
+# Execution
+case $ARG1 in
+  update|upgrade|u)
+    update $DISTRO
+    ;;
+
+  hotspot | h )
+    wifi_hotspot
+    ;;
+
+  strength | s )
+    if [$ARG2 == ""]
+    then wifi_strength 1
+
+    else wifi_strength $ARG2
+
+    fi
+    ;;
+
+  lk | ik | keyboard )
+    if [$ARG2 == ""]
+    then internal_keyboard 1
+
+    else internal_keyboard $ARG2
+
+    fi
+    ;;
+
+  smb | samba )
+    if [$ARG2 == ""]
+    then smb_service 0
+
+    else smb_service $ARG2
+
+    fi
+    ;;
+
+  mongo | mongodb )
+    if [$ARG2 == ""]
+    then mongodb_service 0
+
+    else mongodb_service $ARG2
+
+    fi
+    ;;
+
+  g | game )
+    if [$ARG2 == ""]
+    then echo Provide the name of the game ...
+
+    else start_game $ARG2
+
+    fi
+    ;;
+
+
+  *)
+    echo  "Invalid Argument!!"
+    ;;
+esac
+
+
+
