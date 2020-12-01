@@ -133,6 +133,29 @@ mongodb_service(){
   esac
 }
 
+# Start/Stop MariaDB Services
+mariadb_service(){
+  case $1 in
+  # start Mariadb services
+  start | 1 )
+   sudo systemctl start mariadb.service    
+   echo MariaDB service started ...
+    ;;
+
+  # stop MariaDB services
+  stop | 0 )
+    sudo systemctl stop mariadb.service
+    echo MariaDB service stopped ...
+    ;;
+
+  *)
+    sudo systemctl stop mariadb.service
+    echo MariaDB service stopped ...
+    ;;
+
+  esac
+}
+
 # Start the game..
 start_game(){
   case $1 in
@@ -194,6 +217,16 @@ case $ARG1 in
     then mongodb_service 0
 
     else mongodb_service $ARG2
+
+    fi
+    ;;
+
+
+  maria | mariadb )
+    if [$ARG2 == ""]
+    then mariadb_service 0
+
+    else mariadb_service $ARG2
 
     fi
     ;;

@@ -30,7 +30,7 @@ def update():
 
     # print("The Sysytem was updated successfully!")
 
-    ####### KDE NEON #####
+    ####### Arch Based #####
     # os.system("sudo pacman -Syu")
 
     ####### Solus #####
