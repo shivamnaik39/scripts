@@ -3,7 +3,9 @@
 if pgrep -x $1 > /dev/null
 then
 	killall $1
+	notify-send "🍎 $1 Disabled"
 else
 	$1 &
+	notify-send "🍏 $1 Enabled"
 fi
 

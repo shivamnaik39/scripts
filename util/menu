@@ -5,7 +5,7 @@ ARG1=("$1")
 ARG2=("$2")
 
 # Variables
-WIFI_INTERFACE=wlp2s0
+WIFI_INTERFACE=wlo1
 
 
 # Current linux distribution
@@ -51,7 +51,7 @@ wifi_hotspot(){
   echo "Interface: $WIFI_INTERFACE"
   #Install create_ap package before executing this function
   # Deoendencies: bash util-linux  procps hostapd iproute2 iw dnsmasq iptables
-  sudo create_ap $WIFI_INTERFACE $WIFI_INTERFACE axiom39 34567893
+  sudo lnxrouter --ap $WIFI_INTERFACE "Aki Shino" -p 34567893
 }
 
 # WIFI Strength
@@ -156,6 +156,30 @@ mariadb_service(){
   esac
 }
 
+
+# Start/Stop PostgreSql Services
+postgres_service(){
+  case $1 in
+  # start Postgres services
+  start | 1 )
+   sudo systemctl start postgres.service    
+   echo PostgreSql service started ...
+    ;;
+
+  # stop Postgres services
+  stop | 0 )
+    sudo systemctl stop postgres.service
+    echo PostgreSql service stopped ...
+    ;;
+
+  *)
+    sudo systemctl stop postgres.service
+    echo PostgreSql service stopped ...
+    ;;
+
+  esac
+}
+
 # Start the game..
 start_game(){
   case $1 in
@@ -227,6 +251,16 @@ case $ARG1 in
     then mariadb_service 0
 
     else mariadb_service $ARG2
+
+    fi
+    ;;
+
+
+  postg | postgres )
+    if [$ARG2 == ""]
+    then postgres_service 0
+
+    else postgres_service $ARG2
 
     fi
     ;;

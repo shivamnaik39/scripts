@@ -1,0 +1,6 @@
+#!/bin/bash
+
+for f in *.mkv
+do 
+    mkvpropedit "$f" --edit track:a1 --set flag-default=0 --edit track:a2 --set flag-default=1
+done
